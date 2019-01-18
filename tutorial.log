@@ -1,0 +1,698 @@
+----------------------------------------
+      name:  <unnamed>
+       log:  D:\Dropbox\2019S\571\ECON57
+> 1_lab_2019S\tutorial.log
+  log type:  text
+ opened on:  18 Jan 2019, 10:44:43
+
+. * Must add 'log close' in the end of t
+> he do-file
+. 
+. 
+. 
+. **********************
+. *1. Comments and Help*
+. **********************
+. 
+. //comment...
+. 
+. *comment...
+. 
+. /* 
+> ...and 
+> comment
+> */
+. 
+. //help summarize
+. 
+. 
+. 
+. ***************
+. *2. Calculator*
+. ***************
+. display "Hello World."
+Hello World.
+
+. display 2 + 2
+4
+
+. display log(2) + log(0.5)
+0
+
+. 
+. 
+. 
+. ********************
+. *3. Data management*
+. ********************
+. ** Basic data management
+. set obs 30
+number of observations (_N) was 0, now
+30
+
+. set seed 123
+
+. generate ones = 1  /*generate variable
+>  by row*/
+
+. generate u = rnormal()  /*standard nor
+> mal*/
+
+. generate x = rnormal(2, 2)
+
+. generate index = _n  /*convenient way 
+> to get indices*/
+
+. generate N = _N  /*convenient way to g
+> et no. observations*/
+
+. replace N = 1 if index < 10 | index > 
+> 20
+(19 real changes made)
+
+. rename N size
+
+. drop size  /*delete variable*/
+
+. keep u index x  /*only keep these vari
+> ables*/
+
+. generate y = 0.5 * x + u
+
+. 
+. ** Input data
+. clear
+
+. input gpa act
+
+           gpa        act
+  1.           2.8 21
+  2.           3.4 24
+  3.           3.0 26
+  4.           3.5 27
+  5.           3.6 29
+  6. end
+
+. 
+. ** Macro and loop
+. local my_varlist gpa act
+
+. foreach v of varlist `my_varlist' {
+  2.         summarize `v'
+  3. }
+
+    Variable |        Obs        Mean   
+>  Std. Dev.       Min        Max
+-------------+--------------------------
+> -------------------------------
+         gpa |          5        3.26   
+>  .3435113        2.8        3.6
+
+    Variable |        Obs        Mean   
+>  Std. Dev.       Min        Max
+-------------+--------------------------
+> -------------------------------
+         act |          5        25.4   
+>   3.04959         21         29
+
+. 
+. local colors red blue green
+
+. foreach c in `colors' {
+  2.         display "`c'"
+  3.         }
+red
+blue
+green
+
+.         
+. forvalues i = 1/3 {
+  2.         display `i'
+  3.         }
+1
+2
+3
+
+. 
+. local i 1
+
+. while `i' <= 5 {
+  2.     display `i++'
+  3. }
+1
+2
+3
+4
+5
+
+. 
+. 
+. ** Descriptive statistics
+. sysuse auto, clear
+(1978 Automobile Data)
+
+. describe
+
+Contains data from C:\Program Files (x86
+> )\Stata15\ado\base/a/auto.dta
+  obs:            74                    
+>       1978 Automobile Data
+                                        
+>         „
+                                        
+>         J
+                                        
+>               
+ vars:            12                    
+>       13 Apr 2016 17:45
+ size:         3,182                    
+>       (_dta has notes)
+----------------------------------------
+              storage   display    value
+variable name   type    format     label
+>       variable label
+----------------------------------------
+make            str18   %-18s           
+                    >       Make and
+                    Model
+price           int     %8.0gc          
+                    >       Price
+mpg             int     %8.0g           
+                    >       Mileage
+                    (mpg)
+rep78           int     %8.0g           
+                    >       Repair
+                    Record 1978
+headroom        float   %6.1f           
+                    >       Headroom
+                    (in.)
+trunk           int     %8.0g           
+                    >       Trunk space
+                    (cu. ft.)
+weight          int     %8.0gc          
+                    >       Weight
+                    (lbs.)
+length          int     %8.0g           
+                    >       Length (in.)
+turn            int     %8.0g           
+                    >       Turn Circle
+                    (ft.)
+displacement    int     %8.0g           
+                    >       Displacement
+                    (cu. in.)
+gear_ratio      float   %6.2f           
+                    >       Gear Ratio
+foreign         byte    %8.0g      origi
+                    > n     Car type
+----------------------------------------
+Sorted by: foreign
+
+. summarize
+
+    Variable |        Obs        Mean   
+>  Std. Dev.       Min        Max
+-------------+--------------------------
+> -------------------------------
+        make |          0
+       price |         74    6165.257   
+>  2949.496       3291      15906
+         mpg |         74     21.2973   
+>  5.785503         12         41
+       rep78 |         69    3.405797   
+>  .9899323          1          5
+    headroom |         74    2.993243   
+>  .8459948        1.5          5
+-------------+--------------------------
+> -------------------------------
+       trunk |         74    13.75676   
+>  4.277404          5         23
+      weight |         74    3019.459   
+>  777.1936       1760       4840
+      length |         74    187.9324   
+>  22.26634        142        233
+        turn |         74    39.64865   
+>  4.399354         31         51
+displacement |         74    197.2973   
+>  91.83722         79        425
+-------------+--------------------------
+> -------------------------------
+  gear_ratio |         74    3.014865   
+>  .4562871       2.19       3.89
+     foreign |         74    .2972973   
+>  .4601885          0          1
+
+. summarize price, detail
+
+                            Price
+----------------------------------------
+> ---------------------
+      Percentiles      Smallest
+ 1%         3291           3291
+ 5%         3748           3299
+10%         3895           3667       Ob
+> s                  74
+25%         4195           3748       Su
+> m of Wgt.          74
+
+50%       5006.5                      Me
+> an           6165.257
+                        Largest       St
+> d. Dev.      2949.496
+75%         6342          13466
+90%        11385          13594       Va
+> riance        8699526
+95%        13466          14500       Sk
+> ewness       1.653434
+99%        15906          15906       Ku
+> rtosis       4.819188
+
+. return list  /* return after summarize
+> */
+
+scalars:
+                  r(N) =  74
+              r(sum_w) =  74
+               r(mean) =  6165.256756756
+> 757
+                r(Var) =  8699525.974268
+> 79
+                 r(sd) =  2949.495884768
+> 92
+           r(skewness) =  1.653433511704
+> 859
+           r(kurtosis) =  4.819187528464
+> 004
+                r(sum) =  456229
+                r(min) =  3291
+                r(max) =  15906
+                 r(p1) =  3291
+                 r(p5) =  3748
+                r(p10) =  3895
+                r(p25) =  4195
+                r(p50) =  5006.5
+                r(p75) =  6342
+                r(p90) =  11385
+                r(p95) =  13466
+                r(p99) =  15906
+
+. scalar mean_price = r(mean)
+
+. sum price if foreign == 1
+
+    Variable |        Obs        Mean   
+>  Std. Dev.       Min        Max
+-------------+--------------------------
+> -------------------------------
+       price |         22    6384.682   
+>  2621.915       3748      12990
+
+. sum price if foreign ~= 1
+
+    Variable |        Obs        Mean   
+>  Std. Dev.       Min        Max
+-------------+--------------------------
+> -------------------------------
+       price |         52    6072.423   
+>  3097.104       3291      15906
+
+. codebook rep78
+
+----------------------------------------
+rep78                 Repair Record 1978
+----------------------------------------
+
+                  type:  numeric (int)
+
+                 range:  [1,5]          
+>               units:  1
+         unique values:  5              
+>           missing .:  5/74
+
+            tabulation:  Freq.  Value
+                             2  1
+                             8  2
+                            30  3
+                            18  4
+                            11  5
+                             5  .
+
+. list if missing(rep78)
+
+     +--------------------------------+
+  3. | make          |  price  | mpg  |
+     | AMC Spirit    |  3,799  |  22  |
+     |--------------------------------|
+     |  rep78  |  headroom  |  trunk  |
+     |      .  |       3.0  |     12  |
+     |----------------------+---------|
+     |  weight  |  length   |  turn   |
+     |   2,640  |     168   |    35   |
+     |----------+---------------------|
+     | displa~t | gear_r~o |  foreign |
+     |      121 |     3.08 | Domestic |
+     +--------------------------------+
+
+     +--------------------------------+
+  7. | make          |  price  | mpg  |
+     | Buick Opel    |  4,453  |  26  |
+     |--------------------------------|
+     |  rep78  |  headroom  |  trunk  |
+     |      .  |       3.0  |     10  |
+     |----------------------+---------|
+     |  weight  |  length   |  turn   |
+     |   2,230  |     170   |    34   |
+     |----------+---------------------|
+     | displa~t | gear_r~o |  foreign |
+     |      304 |     2.87 | Domestic |
+     +--------------------------------+
+
+     +--------------------------------+
+ 45. | make          |  price  | mpg  |
+     | Plym. Sapporo |  6,486  |  26  |
+     |--------------------------------|
+     |  rep78  |  headroom  |  trunk  |
+     |      .  |       1.5  |      8  |
+     |----------------------+---------|
+     |  weight  |  length   |  turn   |
+     |   2,520  |     182   |    38   |
+     |----------+---------------------|
+     | displa~t | gear_r~o |  foreign |
+     |      119 |     3.54 | Domestic |
+     +--------------------------------+
+
+     +--------------------------------+
+ 51. | make          |  price  | mpg  |
+     | Pont. Phoenix |  4,424  |  19  |
+     |--------------------------------|
+     |  rep78  |  headroom  |  trunk  |
+     |      .  |       3.5  |     13  |
+     |----------------------+---------|
+     |  weight  |  length   |  turn   |
+     |   3,420  |     203   |    43   |
+     |----------+---------------------|
+     | displa~t | gear_r~o |  foreign |
+     |      231 |     3.08 | Domestic |
+     +--------------------------------+
+
+     +--------------------------------+
+ 64. | make          |  price  | mpg  |
+     | Peugeot 604   | 12,990  |  14  |
+     |--------------------------------|
+     |  rep78  |  headroom  |  trunk  |
+     |      .  |       3.5  |     14  |
+     |----------------------+---------|
+     |  weight  |  length   |  turn   |
+     |   3,420  |     192   |    38   |
+     |----------+---------------------|
+     | displa~t | gear_r~o |  foreign |
+     |      163 |     3.58 |  Foreign |
+     +--------------------------------+
+
+. drop if rep78 == .
+(5 observations deleted)
+
+. tabulate foreign
+
+   Car type |      Freq.     Percent    
+>     Cum.
+------------+---------------------------
+> --------
+   Domestic |         48       69.57    
+>    69.57
+    Foreign |         21       30.43    
+>   100.00
+------------+---------------------------
+> --------
+      Total |         69      100.00
+
+. tabulate foreign, sum(mpg)
+
+            |      Summary of Mileage (m
+> pg)
+   Car type |        Mean   Std. Dev.   
+>     Freq.
+------------+---------------------------
+> ---------
+   Domestic |   19.541667   4.7533116   
+>        48
+    Foreign |   25.285714   6.3098562   
+>        21
+------------+---------------------------
+> ---------
+      Total |   21.289855   5.8664085   
+>        69
+
+. sort foreign
+
+. sort foreign price
+
+. corr mpg weight
+(obs=69)
+
+             |      mpg   weight
+-------------+------------------
+         mpg |   1.0000
+      weight |  -0.8055   1.0000
+
+
+. bysort foreign: corr mpg weight
+
+----------------------------------------
+-> foreign = Domestic
+(obs=48)
+
+             |      mpg   weight
+-------------+------------------
+         mpg |   1.0000
+      weight |  -0.8683   1.0000
+
+
+----------------------------------------
+-> foreign = Foreign
+(obs=21)
+
+             |      mpg   weight
+-------------+------------------
+         mpg |   1.0000
+      weight |  -0.6212   1.0000
+
+
+
+. 
+. 
+. ** More Data manipulation
+. *** Missing values
+. generate highprice = 1 if price >= 100
+> 00
+(60 missing values generated)
+
+. replace highprice = 0 if highprice == 
+> .
+(60 real changes made)
+
+. // or use mvencode to encode missing v
+> alues
+. // mvencode highprice, mv(0)
+. 
+. *** Max, sum, round
+. egen maxprice = max(price)
+
+. egen sumprice = sum(price)
+
+. generate gear_ratio1 = round(gear_rati
+> o, 1)
+
+. 
+. *** Substring
+. generate make_head = substr(make, 1, 2
+> )
+
+. generate make_tail = substr(make, 3, .
+> )
+
+. 
+. *** Convert string variables
+. tostring mpg, gen(mpg_str)
+mpg_str generated as str2
+
+. destring mpg_str, gen(mpg_num)
+mpg_str: all characters numeric; mpg_num
+>  generated as byte
+
+. 
+. *** Append
+. // 1st dataset
+. sysuse auto, clear
+(1978 Automobile Data)
+
+. keep if foreign == 1
+(52 observations deleted)
+
+. save auto_foreign, replace
+(note: file auto_foreign.dta not found)
+file auto_foreign.dta saved
+
+. // 2nd dataset
+. sysuse auto, clear
+(1978 Automobile Data)
+
+. keep if foreign == 0
+(22 observations deleted)
+
+. append using auto_foreign
+(label origin already defined)
+
+. erase auto_foreign.dta  /* delete data
+> file on disk */
+
+. 
+. *** Merge
+. sysuse auto, clear
+(1978 Automobile Data)
+
+. keep make price
+
+. save auto_1, replace
+(note: file auto_1.dta not found)
+file auto_1.dta saved
+
+. 
+. sysuse auto, clear
+(1978 Automobile Data)
+
+. keep make displacement
+
+. merge 1:1 make using auto_1
+
+    Result                           # o
+> f obs.
+    ------------------------------------
+> -----
+    not matched                         
+>     0
+    matched                             
+>    74  (_merge==3)
+    ------------------------------------
+> -----
+
+. erase auto_1.dta
+
+. 
+. *** Reshape
+. webuse reshape1, clear
+
+. drop ue*  /* any variable starts with 
+> "ue" */
+
+. reshape long inc, i(id) j(year) /*wide
+>  to long*/
+(note: j = 80 81 82)
+
+Data                               wide 
+>   ->                                  
+>        long
+----------------------------------------
+> -------------------------------------
+Number of obs.                        3 
+>   ->       9
+Number of variables                   5 
+>   ->       4
+j variable (3 values)                   
+>   ->   year
+xij variables:
+                      inc80 inc81 inc82 
+>   ->   inc
+----------------------------------------
+> -------------------------------------
+
+. reshape wide inc, i(id) j(year) /*long
+>  to wide*/
+(note: j = 80 81 82)
+
+Data                               long 
+>   ->                                  
+>        wide
+----------------------------------------
+> -------------------------------------
+Number of obs.                        9 
+>   ->       3
+Number of variables                   4 
+>   ->       5
+j variable (3 values)              year 
+>   ->   (dropped)
+xij variables:
+                                    inc 
+>   ->   inc80 inc81 inc82
+----------------------------------------
+> -------------------------------------
+
+. 
+. *** Creating summarized datasets
+. webuse college, clear
+
+. collapse (mean) mean_gpa = gpa mean_ho
+> ur = hour (sd) sd_gpa = gpa sd_hour = 
+> hour, by(year)
+
+. list
+
+     +----------------------------+
+  1. | year | mean_gpa | mean_h~r |
+     |    1 |      2.9 |     30.5 |
+     |----------------------------|
+     |    sd_gpa   |    sd_hour   |
+     |  .6055301   |   2.516612   |
+     +----------------------------+
+
+     +----------------------------+
+  2. | year | mean_gpa | mean_h~r |
+     |    2 | 3.066667 | 31.33333 |
+     |----------------------------|
+     |    sd_gpa   |    sd_hour   |
+     |  .6658328   |    3.21455   |
+     +----------------------------+
+
+     +----------------------------+
+  3. | year | mean_gpa | mean_h~r |
+     |    3 | 3.066667 | 32.66667 |
+     |----------------------------|
+     |    sd_gpa   |    sd_hour   |
+     |  .7767453   |   2.516612   |
+     +----------------------------+
+
+     +----------------------------+
+  4. | year | mean_gpa | mean_h~r |
+     |    4 |     3.15 |     31.5 |
+     |----------------------------|
+     |    sd_gpa   |    sd_hour   |
+     |  .3535534   |   .7071068   |
+     +----------------------------+
+
+. 
+. 
+. 
+. **********
+. *4. Graph*
+. **********
+. sysuse auto, clear
+(1978 Automobile Data)
+
+. twoway scatter mpg weight
+
+. twoway scatter mpg weight, by(foreign)
+
+. twoway histogram price
+
+. generate log_price = log(price)
+
+. twoway histogram log_price
+
+. 
+. 
+. log close
+      name:  <unnamed>
+       log:  D:\Dropbox\2019S\571\ECON57
+> 1_lab_2019S\tutorial.log
+  log type:  text
+ closed on:  18 Jan 2019, 10:44:53
+----------------------------------------
