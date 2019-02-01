@@ -8,7 +8,7 @@
 *0. Typical header of a do-file*
 ********************************
 clear  /*clear memory*/ 
-cd D:/Dropbox/2019S/571/ECON571_lab_2019S  /*change working directory*/
+cd C:/Users/wsr/Dropbox/2019S/571/ECON571_lab_2019S  /*change working directory*/
 // cd C:/Users/wsr/Dropbox/2019S/571/ECON571_lab_2019S
 set more off  /*keep scrolling when running do-file*/
 log using tutorial, text replace  /*create log file*/
