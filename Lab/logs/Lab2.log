@@ -1,0 +1,85 @@
+-------------------------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  C:\Users\wsr\Dropbox\2019S\571\ECON571_lab_2019S\Lab\logs/Lab2.log
+  log type:  text
+ opened on:   8 Feb 2019, 11:10:46
+
+. 
+. 
+. * Input data
+. input gpa  act
+
+           gpa        act
+  1.           2.8  21
+  2.           3.4  24
+  3.           3.0  26
+  4.           3.5  27
+  5.           3.6  29
+  6.           3.0  25
+  7.           2.7  25
+  8.           3.7  30
+  9. end
+
+. gen student = _n
+
+. 
+. 
+. * Regression
+. regress act gpa
+
+      Source |       SS       df       MS              Number of obs =       8
+-------------+------------------------------           F(  1,     6) =    8.20
+       Model |  32.8409772     1  32.8409772           Prob > F      =  0.0287
+    Residual |  24.0340228     6  4.00567047           R-squared     =  0.5774
+-------------+------------------------------           Adj R-squared =  0.5070
+       Total |      56.875     7       8.125           Root MSE      =  2.0014
+
+------------------------------------------------------------------------------
+         act |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+         gpa |   5.650061   1.973253     2.86   0.029     .8216855    10.47844
+       _cons |    7.72418   6.378446     1.21   0.271    -7.883314    23.33167
+------------------------------------------------------------------------------
+
+. 
+. 
+. * Get coefficients and standard errors
+. scalar b_gpa = _b[gpa]
+
+. scalar se_gpa = _se[gpa]
+
+. display "The coefficient of GPA is " b_gpa
+The coefficient of GPA is 5.6500607
+
+. display "The s.e. of GPA is " se_gpa
+The s.e. of GPA is 1.9732526
+
+. 
+. 
+. * Prediction
+. set obs 10
+obs was 8, now 10
+
+. quietly sum gpa
+
+. replace gpa = r(mean) in 9
+(1 real change made)
+
+. replace gpa = 3 in 10
+(1 real change made)
+
+. *help predict
+. *option stdf for prediction error
+. 
+. 
+. * Get critical t value
+. gen t = invttail(6, 0.025) in 9/10
+(8 missing values generated)
+
+. 
+. log close
+      name:  <unnamed>
+       log:  C:\Users\wsr\Dropbox\2019S\571\ECON571_lab_2019S\Lab\logs/Lab2.log
+  log type:  text
+ closed on:   8 Feb 2019, 11:10:46
+-------------------------------------------------------------------------------------------------------------------------------------------
