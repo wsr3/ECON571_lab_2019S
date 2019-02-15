@@ -23,6 +23,7 @@ regress act gpa
 
 
 * Get coefficients and standard errors
+ereturn list
 scalar b_gpa = _b[gpa]
 scalar se_gpa = _se[gpa]
 display "The coefficient of GPA is " b_gpa
@@ -31,12 +32,12 @@ display "The s.e. of GPA is " se_gpa
 
 * Prediction
 set obs 10
-quietly sum gpa
+quietly summarize gpa
 replace gpa = r(mean) in 9
 replace gpa = 3 in 10
 *help predict
-*option stdf for prediction error
-
+*option stdf for individual prediction error
+*option stdp for mean pred error
 
 * Get critical t value
 gen t = invttail(6, 0.025) in 9/10
