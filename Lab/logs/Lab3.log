@@ -1,12 +1,14 @@
-----------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------------------
       name:  <unnamed>
-       log:  D:\Dropbox\2019S\571\ECON57
-> 1_lab_2019S\Lab\logs/Lab3.log
+       log:  C:\Users\wsr\Dropbox\2019S\571\ECON571_lab_2019S\Lab\logs/Lab3.log
   log type:  text
- opened on:  15 Feb 2019, 12:26:15
+ opened on:  15 Feb 2019, 13:55:08
 
 . 
 . * Load data
+. /* Check for description of the dataset
+> https://www.wiley.com/legacy/wileychi/verbeek2ed/datasets.html
+> */
 . use data/housing.dta
 
 . 
@@ -21,179 +23,79 @@
 
 . 
 . * Run regression
-. regress lprice llotsize bedrooms bathr
-> ms recroom fullbase airco prefarea sto
-> ries
+. regress lprice llotsize bedrooms bathrms i.recroom i.fullbase ///
+>         i.airco i.prefarea stories
 
-      Source |       SS           df    
->    MS      Number of obs   =       546
--------------+--------------------------
-> --------   F(8, 537)       =    126.51
-       Model |  49.2700678         8  6.
-> 15875848   Prob > F        =    0.0000
-    Residual |  26.1431024       537  .0
-> 48683617   R-squared       =    0.6533
--------------+--------------------------
-> --------   Adj R-squared   =    0.6482
-       Total |  75.4131702       545  .1
-> 38372789   Root MSE        =    .22064
+      Source |       SS       df       MS              Number of obs =     546
+-------------+------------------------------           F(  8,   537) =  126.51
+       Model |  49.2700678     8  6.15875848           Prob > F      =  0.0000
+    Residual |  26.1431024   537  .048683617           R-squared     =  0.6533
+-------------+------------------------------           Adj R-squared =  0.6482
+       Total |  75.4131702   545  .138372789           Root MSE      =  .22064
 
-----------------------------------------
-> --------------------------------------
-      lprice |      Coef.   Std. Err.   
->    t                                  
->         P>|t|                         
->                   [95% Con            
->                           f. Interval]
--------------+--------------------------
-> --------------------------------------
-    llotsize |   .3688067   .0257157    
-> 14.34                                 
->         0.000                         
->                    .318291            
->                               .4193224
-    bedrooms |   .0336246   .0148243    
->  2.27                                 
->         0.024                         
->                   .0045038            
->                               .0627454
-     bathrms |   .1764315    .021164    
->  8.34                                 
->         0.000                         
->                   .1348571            
->                               .2180059
-     recroom |    .052585   .0272766    
->  1.93                                 
->         0.054                         
->                   -.000997            
->                                .106167
-    fullbase |   .1116416   .0227235    
->  4.91                                 
->         0.000                         
->                   .0670037            
->                               .1562795
-       airco |   .1586249   .0220707    
->  7.19                                 
->         0.000                         
->                   .1152693            
->                               .2019805
-    prefarea |   .1389202   .0235388    
->  5.90                                 
->         0.000                         
->                   .0926807            
->                               .1851597
-     stories |   .0968393   .0130565    
->  7.42                                 
->         0.000                         
->                   .0711913            
->                               .1224873
-       _cons |   7.303587   .2138694    
-> 34.15                                 
->         0.000                         
->                   6.883463            
->                                7.72371
-----------------------------------------
-> --------------------------------------
+------------------------------------------------------------------------------
+      lprice |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+    llotsize |   .3688067   .0257157    14.34   0.000      .318291    .4193224
+    bedrooms |   .0336246   .0148243     2.27   0.024     .0045038    .0627454
+     bathrms |   .1764315    .021164     8.34   0.000     .1348571    .2180059
+   1.recroom |    .052585   .0272766     1.93   0.054     -.000997     .106167
+  1.fullbase |   .1116416   .0227235     4.91   0.000     .0670037    .1562795
+     1.airco |   .1586249   .0220707     7.19   0.000     .1152693    .2019805
+  1.prefarea |   .1389202   .0235388     5.90   0.000     .0926807    .1851597
+     stories |   .0968393   .0130565     7.42   0.000     .0711913    .1224873
+       _cons |   7.303587   .2138694    34.15   0.000     6.883463     7.72371
+------------------------------------------------------------------------------
 
 . 
 . 
 . 
-. * Output summary and regression tables
->  with -estout- package
+. * Output summary and regression tables with -estout- package
 . * Install the package online
 . //ssc install estout, replace
 . eststo clear /*clear stored output*/
 
-. estpost summarize lprice llotsize bedr
-> ooms bathrms recroom fullbase airco //
-> /
+. estpost summarize lprice llotsize bedrooms bathrms recroom fullbase airco ///
 >         prefarea stories
 
-             |  e(count)   e(sum_w) 
--------------+----------------------
-      lprice |       546        546 
-    llotsize |       546        546 
-    bedrooms |       546        546 
-     bathrms |       546        546 
-     recroom |       546        546 
-    fullbase |       546        546 
-       airco |       546        546 
-    prefarea |       546        546 
-     stories |       546        546 
-
-             |   e(mean)     e(Var) 
--------------+----------------------
-      lprice |  11.05896   .1383728 
-    llotsize |   8.46663   .1583433 
-    bedrooms |  2.965201    .543741 
-     bathrms |  1.285714   .2521625 
-     recroom |  .1776557   .1463622 
-    fullbase |  .3498168   .2278624 
-       airco |  .3168498   .2168532 
-    prefarea |  .2344322   .1798031 
-     stories |  1.807692   .7537756 
-
-             |     e(sd)     e(min) 
--------------+----------------------
-      lprice |  .3719849   10.12663 
-    llotsize |  .3979238   7.408531 
-    bedrooms |  .7373879          1 
-     bathrms |  .5021579          1 
-     recroom |  .3825731          0 
-    fullbase |  .4773493          0 
-       airco |   .465675          0 
-    prefarea |  .4240319          0 
-     stories |  .8682025          1 
-
-             |    e(max)     e(sum) 
--------------+----------------------
-      lprice |  12.15478   6038.192 
-    llotsize |  9.692766    4622.78 
-    bedrooms |         6       1619 
-     bathrms |         4        702 
-     recroom |         1         97 
-    fullbase |         1        191 
-       airco |         1        173 
-    prefarea |         1        128 
-     stories |         4        987 
+             |  e(count)   e(sum_w)    e(mean)     e(Var)      e(sd)     e(min)     e(max)     e(sum) 
+-------------+----------------------------------------------------------------------------------------
+      lprice |       546        546   11.05896   .1383728   .3719849   10.12663   12.15478   6038.192 
+    llotsize |       546        546    8.46663   .1583433   .3979238   7.408531   9.692766    4622.78 
+    bedrooms |       546        546   2.965201    .543741   .7373879          1          6       1619 
+     bathrms |       546        546   1.285714   .2521625   .5021579          1          4        702 
+     recroom |       546        546   .1776557   .1463622   .3825731          0          1         97 
+    fullbase |       546        546   .3498168   .2278624   .4773493          0          1        191 
+       airco |       546        546   .3168498   .2168532    .465675          0          1        173 
+    prefarea |       546        546   .2344322   .1798031   .4240319          0          1        128 
+     stories |       546        546   1.807692   .7537756   .8682025          1          4        987 
 
 . * Use -esttab- to generate tables
-. * Remember to close the file before wr
-> iting it
-. esttab using results/lab3.rtf, title(S
-> ummary statistics) ///
->         cells("mean(fmt(2)) sd(fmt(2))
-> ") replace label
+. * Remember to close the file before writing it
+. esttab using results/lab3.rtf, title(Summary statistics) ///
+>         cells("mean(fmt(2)) sd(fmt(2))") replace label
 (output written to results/lab3.rtf)
 
 .         
-. * Use prefix -eststo:- to store result
-> s in memory
+. * Use prefix -eststo:- to store results in memory
 . eststo clear /*clear stored output*/
 
-. eststo: quietly regress lprice llotsiz
-> e bedrooms bathrms recroom fullbase //
-> /
+. eststo: quietly regress lprice llotsize bedrooms bathrms recroom fullbase ///
 >         airco prefarea stories
 (est1 stored)
 
-. eststo: quietly regress lprice llotsiz
-> e bedrooms bathrms recroom fullbase 
+. eststo: quietly regress lprice llotsize bedrooms bathrms recroom fullbase 
 (est2 stored)
 
-. esttab using results/lab3.rtf, star(* 
-> 0.1 ** 0.05 *** 0.01) ///
->         title(Regression results) repl
-> ace label append 
-(note: file C:\Users\maxfl\AppData\Local
-> \Temp\ST_1f64_000001.tmp not found)
+. esttab using results/lab3.rtf, star(* 0.1 ** 0.05 *** 0.01) ///
+>         title(Regression results) replace label append 
+(note: file C:\Users\wsr\AppData\Local\Temp\ST_00000001.tmp not found)
 (output written to results/lab3.rtf)
 
 .         
 . log close
       name:  <unnamed>
-       log:  D:\Dropbox\2019S\571\ECON57
-> 1_lab_2019S\Lab\logs/Lab3.log
+       log:  C:\Users\wsr\Dropbox\2019S\571\ECON571_lab_2019S\Lab\logs/Lab3.log
   log type:  text
- closed on:  15 Feb 2019, 12:26:16
-----------------------------------------
+ closed on:  15 Feb 2019, 13:55:09
+-------------------------------------------------------------------------------------------------------------------------------------------

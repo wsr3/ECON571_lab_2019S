@@ -1,10 +1,13 @@
 clear all
 set more off
-//cd C:/Users/wsr/Dropbox/2019S/571/ECON571_lab_2019S
-cd D:/Dropbox/2019S/571/ECON571_lab_2019S/Lab
+cd C:/Users/wsr/Dropbox/2019S/571/ECON571_lab_2019S/Lab
+//cd D:/Dropbox/2019S/571/ECON571_lab_2019S/Lab
 log using logs/Lab3, text replace
 
 * Load data
+/* Check for description of the dataset
+https://www.wiley.com/legacy/wileychi/verbeek2ed/datasets.html
+*/
 use data/housing.dta
 
 * Generate log transformed variables
@@ -15,7 +18,8 @@ gen llotsize = log(lotsize)
 label var lprice "log(price)"
 
 * Run regression
-regress lprice llotsize bedrooms bathrms recroom fullbase airco prefarea stories
+regress lprice llotsize bedrooms bathrms i.recroom i.fullbase ///
+	i.airco i.prefarea stories
 
 
 
