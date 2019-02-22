@@ -1,0 +1,128 @@
+-------------------------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  C:\Users\wsr\Dropbox\2019S\571\ECON571_lab_2019S\Lab\logs/Lab4.log
+  log type:  text
+ opened on:  22 Feb 2019, 11:55:06
+
+. 
+. * Load data
+. /* 
+> Check for description of the dataset
+> https://www.wiley.com/legacy/wileychi/verbeek2ed/datasets.html
+> */
+. use data/housing.dta
+
+. 
+. * Generate log transformed variables
+. gen lprice = log(price)
+
+. gen llotsize = log(lotsize)
+
+. 
+. * Generate squared variables
+. gen llotsize2 = llotsize^2
+
+. 
+. * Generate dummy variables
+. gen D10 = 1 if stories > 1
+(227 missing values generated)
+
+. replace D10 = 0 if D10 == .
+(227 real changes made)
+
+. 
+. * Generate interaction variables
+. gen bd_bath = bedrooms * bathrms
+
+. gen bd_D10 = bedrooms * D10
+
+. 
+. * Run the "unrestricted model"
+. regress lprice llotsize llotsize2 bedrooms bathrms bd_bath bd_D10 ///
+>         i.recroom i.fullbase i.airco i.prefarea i.D10
+
+      Source |       SS       df       MS              Number of obs =     546
+-------------+------------------------------           F( 11,   534) =   85.81
+       Model |  48.1642613    11  4.37856921           Prob > F      =  0.0000
+    Residual |  27.2489089   534  .051027919           R-squared     =  0.6387
+-------------+------------------------------           Adj R-squared =  0.6312
+       Total |  75.4131702   545  .138372789           Root MSE      =  .22589
+
+------------------------------------------------------------------------------
+      lprice |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+    llotsize |   1.694589   .8091445     2.09   0.037     .1050919    3.284085
+   llotsize2 |  -.0770126   .0476116    -1.62   0.106    -.1705416    .0165165
+    bedrooms |   .0364754   .0424976     0.86   0.391    -.0470075    .1199583
+     bathrms |   .1760931   .1000988     1.76   0.079    -.0205426    .3727289
+     bd_bath |   .0062582   .0288154     0.22   0.828    -.0503473    .0628637
+      bd_D10 |  -.0219605   .0338281    -0.65   0.517    -.0884129     .044492
+   1.recroom |   .0561973   .0281851     1.99   0.047       .00083    .1115646
+  1.fullbase |   .0823589    .022922     3.59   0.000     .0373306    .1273872
+     1.airco |   .1824878   .0222793     8.19   0.000     .1387219    .2262537
+  1.prefarea |   .1465299    .024882     5.89   0.000     .0976514    .1954084
+       1.D10 |   .1861248   .0985026     1.89   0.059    -.0073753     .379625
+       _cons |   1.687348   3.425429     0.49   0.623    -5.041621    8.416317
+------------------------------------------------------------------------------
+
+. * Save R2 and SSE for test
+. scalar r2_unr = e(r2)
+
+. scalar sse_unr = e(rss)
+
+. 
+. /*
+> Alternative way to conveniently run the regression with interactions
+> regress lprice c.llotsize##c.llotsize c.bedrooms##c.bathrms c.bedrooms##i.D10 ///
+>         i.recroom i.fullbase i.airco i.prefarea
+> "#" for interaction term, "##" includes original variables and interaction
+> */
+. 
+. * Run the "restricted model" ommitting bd_bath and bd_D10
+. regress lprice llotsize llotsize2 bedrooms bathrms ///
+>         i.recroom i.fullbase i.airco i.prefarea i.D10
+
+      Source |       SS       df       MS              Number of obs =     546
+-------------+------------------------------           F(  9,   536) =  105.14
+       Model |  48.1425607     9  5.34917341           Prob > F      =  0.0000
+    Residual |  27.2706095   536  .050878003           R-squared     =  0.6384
+-------------+------------------------------           Adj R-squared =  0.6323
+       Total |  75.4131702   545  .138372789           Root MSE      =  .22556
+
+------------------------------------------------------------------------------
+      lprice |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+    llotsize |   1.658477   .8008698     2.07   0.039     .0852481    3.231705
+   llotsize2 |  -.0748983   .0471151    -1.59   0.112    -.1674513    .0176546
+    bedrooms |   .0308456   .0162663     1.90   0.058    -.0011079     .062799
+     bathrms |    .196966   .0213078     9.24   0.000      .155109     .238823
+   1.recroom |   .0550556   .0280603     1.96   0.050    -.0000661    .1101772
+  1.fullbase |   .0837145   .0225795     3.71   0.000     .0393594    .1280696
+     1.airco |   .1827539    .022119     8.26   0.000     .1393033    .2262045
+  1.prefarea |   .1498477   .0242877     6.17   0.000     .1021369    .1975584
+       1.D10 |   .1238342   .0235234     5.26   0.000     .0776249    .1700435
+       _cons |   1.848933   3.401409     0.54   0.587    -4.832793     8.53066
+------------------------------------------------------------------------------
+
+. scalar r2_res = e(r2)
+
+. scalar sse_res = e(rss)
+
+. 
+. 
+. /*
+> F = ((R2_unr-R2_res)/q) / ((1-R2_unr)/(n-k))
+>   = ((SSE_res-SSE_unr)/q) / (SSE_unr/(n-k))
+> F ~ F_{q, n-k}
+> Find critical value using -invFtail(q, n-k, p)-
+> 
+> Need to calculate F manually for this homework.
+> Confirm the result with built-in command -test- 
+> */
+. 
+. log close
+      name:  <unnamed>
+       log:  C:\Users\wsr\Dropbox\2019S\571\ECON571_lab_2019S\Lab\logs/Lab4.log
+  log type:  text
+ closed on:  22 Feb 2019, 11:55:06
+-------------------------------------------------------------------------------------------------------------------------------------------
