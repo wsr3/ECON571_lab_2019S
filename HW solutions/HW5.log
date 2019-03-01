@@ -1,0 +1,352 @@
+-------------------------------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  D:\Dropbox\2019S\571\ECON571_lab_2019S\Lab\logs/HW5.log
+  log type:  text
+ opened on:  28 Feb 2019, 22:38:45
+
+. use data/housing
+
+. codebook
+
+-------------------------------------------------------------------------------------------------------------------------------------------------
+price                                                                                                                                 (unlabeled)
+-------------------------------------------------------------------------------------------------------------------------------------------------
+
+                  type:  numeric (float)
+
+                 range:  [25000,190000]               units:  1
+         unique values:  219                      missing .:  0/546
+
+                  mean:   68121.6
+              std. dev:   26702.7
+
+           percentiles:        10%       25%       50%       75%       90%
+                             40500     49000     62000     82000    105000
+
+-------------------------------------------------------------------------------------------------------------------------------------------------
+lotsize                                                                                                                               (unlabeled)
+-------------------------------------------------------------------------------------------------------------------------------------------------
+
+                  type:  numeric (float)
+
+                 range:  [1650,16200]                 units:  1
+         unique values:  284                      missing .:  0/546
+
+                  mean:   5150.27
+              std. dev:   2168.16
+
+           percentiles:        10%       25%       50%       75%       90%
+                              3000      3600      4600      6360      7980
+
+-------------------------------------------------------------------------------------------------------------------------------------------------
+bedrooms                                                                                                                              (unlabeled)
+-------------------------------------------------------------------------------------------------------------------------------------------------
+
+                  type:  numeric (float)
+
+                 range:  [1,6]                        units:  1
+         unique values:  6                        missing .:  0/546
+
+            tabulation:  Freq.  Value
+                             2  1
+                           136  2
+                           301  3
+                            95  4
+                            10  5
+                             2  6
+
+-------------------------------------------------------------------------------------------------------------------------------------------------
+bathrms                                                                                                                               (unlabeled)
+-------------------------------------------------------------------------------------------------------------------------------------------------
+
+                  type:  numeric (float)
+
+                 range:  [1,4]                        units:  1
+         unique values:  4                        missing .:  0/546
+
+            tabulation:  Freq.  Value
+                           402  1
+                           133  2
+                            10  3
+                             1  4
+
+-------------------------------------------------------------------------------------------------------------------------------------------------
+stories                                                                                                                               (unlabeled)
+-------------------------------------------------------------------------------------------------------------------------------------------------
+
+                  type:  numeric (float)
+
+                 range:  [1,4]                        units:  1
+         unique values:  4                        missing .:  0/546
+
+            tabulation:  Freq.  Value
+                           227  1
+                           238  2
+                            40  3
+                            41  4
+
+-------------------------------------------------------------------------------------------------------------------------------------------------
+driveway                                                                                                                              (unlabeled)
+-------------------------------------------------------------------------------------------------------------------------------------------------
+
+                  type:  numeric (float)
+
+                 range:  [0,1]                        units:  1
+         unique values:  2                        missing .:  0/546
+
+            tabulation:  Freq.  Value
+                            77  0
+                           469  1
+
+-------------------------------------------------------------------------------------------------------------------------------------------------
+recroom                                                                                                                               (unlabeled)
+-------------------------------------------------------------------------------------------------------------------------------------------------
+
+                  type:  numeric (float)
+
+                 range:  [0,1]                        units:  1
+         unique values:  2                        missing .:  0/546
+
+            tabulation:  Freq.  Value
+                           449  0
+                            97  1
+
+-------------------------------------------------------------------------------------------------------------------------------------------------
+fullbase                                                                                                                              (unlabeled)
+-------------------------------------------------------------------------------------------------------------------------------------------------
+
+                  type:  numeric (float)
+
+                 range:  [0,1]                        units:  1
+         unique values:  2                        missing .:  0/546
+
+            tabulation:  Freq.  Value
+                           355  0
+                           191  1
+
+-------------------------------------------------------------------------------------------------------------------------------------------------
+gashw                                                                                                                                 (unlabeled)
+-------------------------------------------------------------------------------------------------------------------------------------------------
+
+                  type:  numeric (float)
+
+                 range:  [0,1]                        units:  1
+         unique values:  2                        missing .:  0/546
+
+            tabulation:  Freq.  Value
+                           521  0
+                            25  1
+
+-------------------------------------------------------------------------------------------------------------------------------------------------
+airco                                                                                                                                 (unlabeled)
+-------------------------------------------------------------------------------------------------------------------------------------------------
+
+                  type:  numeric (float)
+
+                 range:  [0,1]                        units:  1
+         unique values:  2                        missing .:  0/546
+
+            tabulation:  Freq.  Value
+                           373  0
+                           173  1
+
+-------------------------------------------------------------------------------------------------------------------------------------------------
+garagepl                                                                                                                              (unlabeled)
+-------------------------------------------------------------------------------------------------------------------------------------------------
+
+                  type:  numeric (float)
+
+                 range:  [0,3]                        units:  1
+         unique values:  4                        missing .:  0/546
+
+            tabulation:  Freq.  Value
+                           300  0
+                           126  1
+                           108  2
+                            12  3
+
+-------------------------------------------------------------------------------------------------------------------------------------------------
+prefarea                                                                                                                              (unlabeled)
+-------------------------------------------------------------------------------------------------------------------------------------------------
+
+                  type:  numeric (float)
+
+                 range:  [0,1]                        units:  1
+         unique values:  2                        missing .:  0/546
+
+            tabulation:  Freq.  Value
+                           418  0
+                           128  1
+
+. gen lprice = log(price)
+
+. gen llotsize = log(lotsize)
+
+. gen llotsize2 = llotsize^2
+
+. 
+. * Generate dummy variable "D10"
+. gen D10 = 1 if stories > 1
+(227 missing values generated)
+
+. replace D10 = 0 if D10 == .
+(227 real changes made)
+
+. 
+. * Generate interaction variables
+. gen bd_bath = bedrooms * bathrms
+
+. gen bd_D10 = bedrooms * D10
+
+. 
+. * The unrestriced model
+. reg lprice llotsize bedrooms bathrms recroom llotsize2 garagepl ///
+>         bd_bath bd_D10 i.fullbase i.airco i.prefarea i.D10 
+
+      Source |       SS           df       MS      Number of obs   =       546
+-------------+----------------------------------   F(12, 533)      =     83.65
+       Model |  49.2579942        12  4.10483285   Prob > F        =    0.0000
+    Residual |   26.155176       533  .049071625   R-squared       =    0.6532
+-------------+----------------------------------   Adj R-squared   =    0.6454
+       Total |  75.4131702       545  .138372789   Root MSE        =    .22152
+
+------------------------------------------------------------------------------
+      lprice |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+    llotsize |   1.782907    .793703     2.25   0.025     .2237373    3.342077
+    bedrooms |   .0241696   .0417564     0.58   0.563    -.0578578    .1061969
+     bathrms |   .1428449   .0984136     1.45   0.147    -.0504812     .336171
+     recroom |   .0636488   .0276846     2.30   0.022     .0092645     .118033
+   llotsize2 |  -.0845183   .0467171    -1.81   0.071    -.1762905    .0072539
+    garagepl |   .0566289   .0119949     4.72   0.000     .0330658     .080192
+     bd_bath |   .0134191   .0282984     0.47   0.636    -.0421709    .0690091
+      bd_D10 |   -.026291    .033186    -0.79   0.429    -.0914824    .0389003
+  1.fullbase |   .0793514   .0224873     3.53   0.000     .0351767     .123526
+     1.airco |   .1765145   .0218847     8.07   0.000     .1335237    .2195054
+  1.prefarea |   .1458374   .0244008     5.98   0.000     .0979039    .1937709
+       1.D10 |   .2063451   .0966909     2.13   0.033     .0164031    .3962871
+       _cons |   1.488831   3.359389     0.44   0.658    -5.110436    8.088098
+------------------------------------------------------------------------------
+
+. scalar r2_unr = e(r2) /*get r^2*/
+
+. 
+. /* May want to drop bedrooms, bathrooms, llotsize2, 
+> bedrooms*bathrooms, bedrooms*D10 based on t tests at 5% level. */
+. * Run restricted model 
+. reg lprice llotsize recroom garagepl i.fullbase i.airco i.prefarea i.D10 
+
+      Source |       SS           df       MS      Number of obs   =       546
+-------------+----------------------------------   F(7, 538)       =    110.43
+       Model |  44.4664323         7  6.35234747   Prob > F        =    0.0000
+    Residual |  30.9467379       538  .057521818   R-squared       =    0.5896
+-------------+----------------------------------   Adj R-squared   =    0.5843
+       Total |  75.4131702       545  .138372789   Root MSE        =    .23984
+
+------------------------------------------------------------------------------
+      lprice |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+    llotsize |   .3878792   .0293434    13.22   0.000     .3302375    .4455209
+     recroom |   .0797527   .0296095     2.69   0.007     .0215883     .137917
+    garagepl |   .0697696   .0128451     5.43   0.000     .0445369    .0950024
+  1.fullbase |   .0998914   .0237506     4.21   0.000     .0532362    .1465467
+     1.airco |   .1986604   .0233521     8.51   0.000      .152788    .2445329
+  1.prefarea |   .1399329   .0255585     5.48   0.000     .0897263    .1901395
+       1.D10 |   .1983392    .021207     9.35   0.000     .1566806    .2399979
+       _cons |   7.465887   .2448111    30.50   0.000     6.984984    7.946789
+------------------------------------------------------------------------------
+
+. scalar r2_res = e(r2)
+
+. 
+. * Calculate F
+. scalar F = ((r2_unr-r2_res)/5) / ((1-r2_unr)/533)
+
+. scalar Fc = invFtail(5, 533, 0.05) /*critical value at 5%*/
+
+. display "The F statistic is "  F  ". The critical value is "  Fc
+The F statistic is 19.52885. The critical value is 2.2309272
+
+. * Compare with the result of the build-in function -test-
+. quietly reg lprice llotsize bedrooms bathrms recroom llotsize2 garagepl ///
+>         bd_bath bd_D10 i.fullbase i.airco i.prefarea i.D10 
+
+. test bedrooms bathrms llotsize2 bd_bath bd_D10
+
+ ( 1)  bedrooms = 0
+ ( 2)  bathrms = 0
+ ( 3)  llotsize2 = 0
+ ( 4)  bd_bath = 0
+ ( 5)  bd_D10 = 0
+
+       F(  5,   533) =   19.53
+            Prob > F =    0.0000
+
+. * We reject the null. At least one variable have non-zero coefficents.
+. 
+. 
+. * Second attempt. Test the interaction terms. 
+. quietly reg lprice llotsize bedrooms bathrms recroom fullbase airco prefarea ///
+>         garagepl D10 llotsize2 bd_bath bd_D10 
+
+. test bd_bath bd_D10
+
+ ( 1)  bd_bath = 0
+ ( 2)  bd_D10 = 0
+
+       F(  2,   533) =    0.36
+            Prob > F =    0.7007
+
+. 
+. * The F test shows that we can safely drop these two variables. 
+. * Let's run the model without them.
+. reg lprice llotsize bedrooms bathrms recroom fullbase airco prefarea ///
+>         garagepl D10 llotsize2
+
+      Source |       SS           df       MS      Number of obs   =       546
+-------------+----------------------------------   F(10, 535)      =    100.55
+       Model |  49.2230576        10  4.92230576   Prob > F        =    0.0000
+    Residual |  26.1901126       535  .048953482   R-squared       =    0.6527
+-------------+----------------------------------   Adj R-squared   =    0.6462
+       Total |  75.4131702       545  .138372789   Root MSE        =    .22125
+
+------------------------------------------------------------------------------
+      lprice |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+    llotsize |   1.718795   .7856818     2.19   0.029     .1753956    3.262195
+    bedrooms |   .0253778   .0159981     1.59   0.113    -.0060489    .0568045
+     bathrms |   .1880476   .0209869     8.96   0.000     .1468207    .2292745
+     recroom |   .0619243   .0275633     2.25   0.025     .0077787    .1160698
+    fullbase |   .0803824   .0221597     3.63   0.000     .0368518     .123913
+       airco |   .1763948   .0217388     8.11   0.000     .1336908    .2190988
+    prefarea |   .1496466   .0238239     6.28   0.000     .1028466    .1964465
+    garagepl |   .0561979   .0119619     4.70   0.000     .0326998    .0796959
+         D10 |   .1308246   .0231221     5.66   0.000     .0854034    .1762459
+   llotsize2 |  -.0807218   .0462321    -1.75   0.081    -.1715405    .0100968
+       _cons |   1.743308   3.336533     0.52   0.602    -4.811005    8.297621
+------------------------------------------------------------------------------
+
+. 
+. /* 
+> Now bedrooms and llotsize2 are marginally significant. 
+> I will keep them as my "best model" since the number of bedrooms is likely 
+> to affect the price, and the marginal effect of lotsize is possibly 
+> positive and concave. 
+> 
+> You can come up with other stories, such as trusting the data 
+> and drop bedrooms and llotsize2 as well. There are also other possible 
+> specifications. Sometimes, an insignificant variable may become significant 
+> when you include/exclude some other variables. This is likely caused by the 
+> correlations among variables. The bottom line is to tell a consistent story, 
+> intuitively and statistically.
+> 
+> In practice we often include variables that are guided by theories or make 
+> common sence. Including variables at 5% significant level is not the only rule. 
+> */
+. 
+. log close
+      name:  <unnamed>
+       log:  D:\Dropbox\2019S\571\ECON571_lab_2019S\Lab\logs/HW5.log
+  log type:  text
+ closed on:  28 Feb 2019, 22:38:46
+-------------------------------------------------------------------------------------------------------------------------------------------------
