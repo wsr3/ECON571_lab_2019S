@@ -1,0 +1,151 @@
+-------------------------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  C:\Users\wsr\Dropbox\2019S\571\ECON571_lab_2019S\Lab\HW6.log
+  log type:  text
+ opened on:   8 Mar 2019, 12:20:22
+
+. 
+. use data/kielmc
+
+. keep if year == 1981 /*Only keep 1981*/
+(179 observations deleted)
+
+. * Summarize variables
+. sum lprice ldist age larea baths lintst wind
+
+    Variable |       Obs        Mean    Std. Dev.       Min        Max
+-------------+--------------------------------------------------------
+      lprice |       142    11.62902    .3899201   10.62133   12.50618
+       ldist |       142    9.816675    .4537116   8.517193   10.56875
+         age |       142    13.97887    23.93682          0        131
+       larea |       142    7.655592    .3571932   6.599871    8.54403
+       baths |       142    2.380282    .8054107          1          4
+-------------+--------------------------------------------------------
+      lintst |       142    9.450821     .717978     6.9078     10.404
+        wind |       142    6.767606    2.448521          3         11
+
+. * Run the full model
+. reg lprice c.ldist##c.ldist c.age##c.age larea baths c.lintst##c.lintst ///
+>         wind c.ldist#c.wind
+
+      Source |       SS       df       MS              Number of obs =     142
+-------------+------------------------------           F( 10,   131) =   47.61
+       Model |   16.811647    10   1.6811647           Prob > F      =  0.0000
+    Residual |  4.62566967   131  .035310456           R-squared     =  0.7842
+-------------+------------------------------           Adj R-squared =  0.7678
+       Total |  21.4373167   141  .152037707           Root MSE      =  .18791
+
+-----------------------------------------------------------------------------------
+           lprice |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+------------------+----------------------------------------------------------------
+            ldist |   8.781996   3.065126     2.87   0.005     2.718446    14.84555
+                  |
+  c.ldist#c.ldist |  -.4709744    .166524    -2.83   0.005    -.8003985   -.1415502
+                  |
+              age |  -.0088471   .0026033    -3.40   0.001    -.0139971   -.0036972
+                  |
+      c.age#c.age |   .0000572    .000022     2.61   0.010     .0000138    .0001007
+                  |
+            larea |   .3525863   .0711003     4.96   0.000     .2119329    .4932396
+            baths |   .1366131   .0422598     3.23   0.002     .0530131    .2202131
+           lintst |  -.7366895   1.036526    -0.71   0.479    -2.787186    1.313807
+                  |
+c.lintst#c.lintst |   .0600528   .0633125     0.95   0.345    -.0651945    .1853002
+                  |
+             wind |  -.1045244   .1692549    -0.62   0.538    -.4393509    .2303021
+                  |
+   c.ldist#c.wind |   .0057957   .0170602     0.34   0.735    -.0279535    .0395448
+                  |
+            _cons |  -30.15442   10.82235    -2.79   0.006     -51.5636   -8.745241
+-----------------------------------------------------------------------------------
+
+. 
+. * Jointly test the four variables that appear to be insignificant 
+. * Check -help fvvarlist- for more about variable prefix
+. testparm c.lintst##c.lintst wind c.ldist#c.wind
+
+ ( 1)  lintst = 0
+ ( 2)  c.lintst#c.lintst = 0
+ ( 3)  wind = 0
+ ( 4)  c.ldist#c.wind = 0
+
+       F(  4,   131) =    4.38
+            Prob > F =    0.0024
+
+. * The null is rejected. 
+. * Jointly test lintst^2 and dist*wind
+. testparm c.lintst#c.lintst c.ldist#c.wind
+
+ ( 1)  c.lintst#c.lintst = 0
+ ( 2)  c.ldist#c.wind = 0
+
+       F(  2,   131) =    0.50
+            Prob > F =    0.6076
+
+. * Now we can drop these two variables and run the regression.
+. reg lprice c.ldist##c.ldist c.age##c.age larea baths c.lintst wind 
+
+      Source |       SS       df       MS              Number of obs =     142
+-------------+------------------------------           F(  8,   133) =   59.84
+       Model |  16.7763258     8  2.09704072           Prob > F      =  0.0000
+    Residual |  4.66099093   133  .035045045           R-squared     =  0.7826
+-------------+------------------------------           Adj R-squared =  0.7695
+       Total |  21.4373167   141  .152037707           Root MSE      =   .1872
+
+---------------------------------------------------------------------------------
+         lprice |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+----------------+----------------------------------------------------------------
+          ldist |    6.22875   1.547751     4.02   0.000     3.167357    9.290142
+                |
+c.ldist#c.ldist |  -.3291422    .081506    -4.04   0.000    -.4903579   -.1679265
+                |
+            age |  -.0082869     .00253    -3.28   0.001    -.0132911   -.0032827
+                |
+    c.age#c.age |   .0000534   .0000215     2.48   0.014     .0000108    .0000959
+                |
+          larea |   .3704325   .0685568     5.40   0.000     .2348298    .5060353
+          baths |   .1343444   .0411713     3.26   0.001     .0529091    .2157798
+         lintst |   .2376152   .0602292     3.95   0.000     .1184842    .3567462
+           wind |  -.0341244   .0100146    -3.41   0.001     -.053933   -.0143159
+          _cons |  -22.82616   7.622821    -2.99   0.003     -37.9038   -7.748512
+---------------------------------------------------------------------------------
+
+. * I'll choose this specification as my "best fitting model", 
+. * since all variables are individually significant and R^2 remains high.
+. 
+. 
+. **** b(iv) ****
+. * area: 1% increase sqft leads to 0.370% higher price
+. * baths: 1 more bathrooms, 13.4% higher price
+. * lintst: 1% closer to interstate highway, 0.238% higher price
+. * wind: 1% more time wind blows, 3.41% lower price
+. * ldist: marginal effect is 6.229 - 2*0.329*ldist. Plug in mean(ldist)=9.817, get -0.231.
+. *        Evaluated at the sample mean, 1% closer to the incinerator 0.23% lower price.
+. * age: marginal effect is -0.00829 + 2*0.00005*age. Plug in mean(age)=13.979, get -0.0069.
+. *          Evaluated at the sample mean, 1 year older, 0.69% lower price.
+. 
+. 
+. **** b(v) ****
+. * ldist and age have significant square terms
+. * ldist
+. * d(lprice)/d(ldist) = 6.229 + 2*(-0.329)*ldist
+. * Set to zero and calculate ldist that maximizes lprice, holding other 
+. * variables equal, is 9.47, which is smaller than the sample mean at 9.82.
+. * age
+. * d(lprice)/d(age) = -0.00829 + 2*0.00005*age
+. * Set to zero and calculate age that minimizes lprice, holding other 
+. * variables equal, is 77.59, which is larger than the sample mean at 13.98, 
+. * but within the sample range of [0, 131].
+. 
+. 
+. **** b(vi) ****
+. * Estimated se's are smaller in the fitted model. This is as expected, 
+. * restricting the model reduces variances.
+. 
+. 
+. log close
+      name:  <unnamed>
+       log:  C:\Users\wsr\Dropbox\2019S\571\ECON571_lab_2019S\Lab\HW6.log
+  log type:  text
+ closed on:   8 Mar 2019, 12:20:22
+-------------------------------------------------------------------------------------------------------------------------------------------

@@ -1,7 +1,7 @@
 clear all
 set more off
-// cd C:/Users/wsr/Dropbox/2019S/571/ECON571_lab_2019S/Lab
-cd D:/Dropbox/2019S/571/ECON571_lab_2019S/Lab
+cd C:/Users/wsr/Dropbox/2019S/571/ECON571_lab_2019S/Lab
+//cd D:/Dropbox/2019S/571/ECON571_lab_2019S/Lab
 log using logs/Lab6, text replace
 use data/kielmc
 
