@@ -1,0 +1,127 @@
+------------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  C:\Users\wsr\Dropbox\2018S\571\Econ571_Lab\HW/HW7.log
+  log type:  text
+ opened on:   4 Apr 2018, 13:26:56
+
+. use data/housing
+
+. 
+. gen lprice = log(price)
+
+. gen llotsize = log(lotsize)
+
+. gen D10 = 1 if stories > 1
+(227 missing values generated)
+
+. replace D10 = 0 if D10 == .
+(227 real changes made)
+
+. 
+. * True model
+. reg lprice llotsize bedrooms bathrms recroom fullbase ///
+>         airco prefarea garagepl D10 gashw
+
+      Source |       SS       df       MS              Number of obs =     546
+-------------+------------------------------           F( 10,   535) =  103.87
+       Model |   49.775491    10   4.9775491           Prob > F      =  0.0000
+    Residual |  25.6376792   535  .047920896           R-squared     =  0.6600
+-------------+------------------------------           Adj R-squared =  0.6537
+       Total |  75.4131702   545  .138372789           Root MSE      =  .21891
+
+------------------------------------------------------------------------------
+      lprice |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+    llotsize |   .3479852   .0271949    12.80   0.000     .2945633    .4014071
+    bedrooms |   .0240143   .0158142     1.52   0.129    -.0070513    .0550798
+     bathrms |    .182948   .0208005     8.80   0.000     .1420873    .2238086
+     recroom |   .0676918   .0270636     2.50   0.013     .0145278    .1208557
+    fullbase |   .0769309   .0218935     3.51   0.000     .0339232    .1199386
+       airco |   .1928484   .0216487     8.91   0.000     .1503216    .2353753
+    prefarea |   .1487372   .0233705     6.36   0.000     .1028281    .1946464
+    garagepl |   .0519294   .0118704     4.37   0.000      .028611    .0752478
+         D10 |   .1262627   .0229133     5.51   0.000     .0812516    .1712738
+       gashw |   .1749487     .04572     3.83   0.000      .085136    .2647615
+       _cons |   7.553632   .2238157    33.75   0.000     7.113966    7.993297
+------------------------------------------------------------------------------
+
+. 
+. * Omit llotsize
+. reg lprice bedrooms bathrms recroom fullbase ///
+>         airco prefarea garagepl D10 gashw
+
+      Source |       SS       df       MS              Number of obs =     546
+-------------+------------------------------           F(  9,   536) =   74.58
+       Model |  41.9290778     9  4.65878642           Prob > F      =  0.0000
+    Residual |  33.4840924   536  .062470322           R-squared     =  0.5560
+-------------+------------------------------           Adj R-squared =  0.5485
+       Total |  75.4131702   545  .138372789           Root MSE      =  .24994
+
+------------------------------------------------------------------------------
+      lprice |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+    bedrooms |   .0460778   .0179484     2.57   0.011       .01082    .0813355
+     bathrms |   .2108475   .0236183     8.93   0.000     .1644517    .2572434
+     recroom |   .1178463   .0305743     3.85   0.000     .0577861    .1779065
+    fullbase |   .0481043   .0248644     1.93   0.054    -.0007392    .0969479
+       airco |   .2438449   .0242951    10.04   0.000     .1961196    .2915702
+    prefarea |    .200987    .026273     7.65   0.000     .1493763    .2525976
+    garagepl |   .0972024   .0129372     7.51   0.000     .0717886    .1226161
+         D10 |   .0791514   .0258215     3.07   0.002     .0284276    .1298752
+       gashw |   .1740402   .0522012     3.33   0.001     .0714962    .2765841
+       _cons |   10.36759   .0475325   218.12   0.000     10.27422    10.46096
+------------------------------------------------------------------------------
+
+.         
+. 
+. **** 2(a) ****
+. * We can first check the correlation matrix of the covariates.
+. corr llotsize bedrooms bathrms recroom fullbase airco prefarea garagepl D10 gashw
+(obs=546)
+
+             | llotsize bedrooms  bathrms  recroom fullbase    airco prefarea garagepl      D10    gashw
+-------------+------------------------------------------------------------------------------------------
+    llotsize |   1.0000
+    bedrooms |   0.1505   1.0000
+     bathrms |   0.2024   0.3738   1.0000
+     recroom |   0.1800   0.0805   0.1269   1.0000
+    fullbase |   0.0431   0.0972   0.1028   0.3724   1.0000
+       airco |   0.2622   0.1604   0.1850   0.1366   0.0452   1.0000
+    prefarea |   0.2195   0.0790   0.0640   0.1613   0.2287   0.1156   1.0000
+    garagepl |   0.3604   0.1391   0.1782   0.0381   0.0525   0.1566   0.0924   1.0000
+         D10 |  -0.0520   0.5100   0.2508   0.0226  -0.0592   0.1432   0.0107  -0.0166   1.0000
+       gashw |  -0.0138   0.0460   0.0674  -0.0101   0.0047  -0.1303  -0.0592   0.0681   0.0603   1.0000
+
+
+. /* 
+> The correlations of llotsize with most other variables are fairly high.
+> This implies that omitting llotsize will cause biases to relevent coefficients.
+> The size of the bias of variable j is equal to beta_k * delta_j, 
+> where beta_k is llotsize's coefficient in the "true model", 
+> and delta_j is the coefficient of variable j in the regression of 
+> llotsize on all the other covariates.
+> 
+> You can verify this by running the following regression and calculate.
+> reg llotsize bedrooms bathrms recroom fullbase airco prefarea garagepl D10 gashw
+> */
+. 
+. 
+. **** 2(b) ****
+. * See the attached paper for answer.
+. 
+. 
+. **** 3 ****
+. /*
+> Stata (and most statistical packages) won't allow you to include 
+> the redundant variable that has perfect multicolinearity. 
+> Recall that the calculation of coefficients involve (X'X)^{-1} and in the case 
+> of multicolinearity, the rank condition is not satisfied and we can't calculate
+> the inverse matrix.
+> */
+. 
+. log close
+      name:  <unnamed>
+       log:  C:\Users\wsr\Dropbox\2018S\571\Econ571_Lab\HW/HW7.log
+  log type:  text
+ closed on:   4 Apr 2018, 13:26:56
+------------------------------------------------------------------------------------------------------------------------------
