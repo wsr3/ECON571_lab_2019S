@@ -13,7 +13,7 @@ codebook approve male black hispan atotinc yjob unem hrat married ///
 eststo clear
 * Unrestricted model
 probit approve i.male i.black i.hispan atotinc yjob unem hrat i.married ///
-	dep i.sch i.chis i.pubrec i.mortno i.vr 
+	dep i.sch i.chis i.pubrec i.mortno i.vr if ~missing(male black hispan atotinc yjob unem hrat married dep sch chis pubrec mortno vr)
 * Marginal effects at the mean
 margins, dydx(*) atmeans
 * Average marginal effects
@@ -30,7 +30,7 @@ Run the restricted model and retrieve log_likelihood to construct
 lr = 2 * (loglike_unr - loglike_res).
 Compare the results with -lrtest-
 Run the restricted model by adding 
--if ~missing(male black hispan atotinc yjob unem hrat married dep sch chis pubrec mortno vr)-
+-if ~missing(male blac hispan atotinc yjob unem hrat married dep sch chis pubrec mortno vr)-
 to make sure the two models use the same observations.
 */
 
