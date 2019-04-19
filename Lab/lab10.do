@@ -19,6 +19,7 @@ reg wlwage weduc wfemale wexper wexpsq w, noc
 * FGLS
 * Estimate reg
 use data/wage1, clear
+drop if educ==0
 qui reg lwage educ female exper expersq
 predict e, residual
 gen logesq=ln(e*e)
