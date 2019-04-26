@@ -1,4 +1,4 @@
-clear all
+clear al-l
 set more off
 cd C:/Users/wsr/Dropbox/2019S/571/ECON571_lab_2019S/Lab
 // cd D:/Dropbox/2019S/571/ECON571_lab_2019S/Lab
@@ -14,3 +14,4 @@ gen d_lrexpp = lrexpp - l.lrexpp
 gen d_lenrol = lenrol - l.lenrol
 gen d_lunch = lunch - l.lunch
 reg d_math4 y94 y95 y96 y97 y98 d_lrexpp d_lenrol d_lunch /*y93 is dropped*/
+reg d.math4 y94-y98 d.lrexpp d.lenrol d.lunch
